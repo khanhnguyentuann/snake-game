@@ -8,9 +8,12 @@ pygame.init()
 fps = pygame.time.Clock()
 
 # Cấu hình
-WINDOW_SIZE = (600, 400)
-SNAKE_SIZE = 20
-SNAKE_SPEED = 20
+WINDOW_SIZE = (800, 600)
+GRID_SIZE = 20
+GRID_WIDTH = WINDOW_SIZE[0] // GRID_SIZE
+GRID_HEIGHT = WINDOW_SIZE[1] // GRID_SIZE
+SNAKE_SIZE = GRID_SIZE
+SNAKE_SPEED = GRID_SIZE
 WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
 RED = (255, 0, 0)
@@ -19,9 +22,6 @@ BLACK = (0, 0, 0)
 # Tạo cửa sổ
 screen = pygame.display.set_mode(WINDOW_SIZE)
 pygame.display.set_caption("Rắn săn mồi")
-GRID_SIZE = 20
-GRID_WIDTH = WINDOW_SIZE[0] // GRID_SIZE
-GRID_HEIGHT = WINDOW_SIZE[1] // GRID_SIZE
 
 
 def draw_grid():
@@ -38,17 +38,27 @@ def random_food_position():
     )
 
 
+def draw_score(score):
+    font = pygame.font.Font(None, 36)
+    text = font.render(f"Score: {score}", True, BLACK)
+    text_rect = text.get_rect()
+    text_rect.topleft = (10, 10)
+    screen.blit(text, text_rect)
+
+
 def random_snake_position():
     return (
-        random.randint(0, GRID_WIDTH - 1) * GRID_SIZE,
-        random.randint(0, GRID_HEIGHT - 1) * GRID_SIZE
+        random.randint(3, GRID_WIDTH - 4) * GRID_SIZE,
+        random.randint(3, GRID_HEIGHT - 4) * GRID_SIZE
     )
 
 
 def game_over():
     font = pygame.font.Font(None, 54)
     text = font.render("Game Over!", True, RED)
-    screen.blit(text, (WINDOW_SIZE[0] // 2 - 100, WINDOW_SIZE[1] // 2 - 50))
+    text_rect = text.get_rect()
+    text_rect.center = (WINDOW_SIZE[0] // 2, WINDOW_SIZE[1] // 2)
+    screen.blit(text, text_rect)
     pygame.display.flip()
     while True:
         for event in pygame.event.get():
@@ -67,6 +77,9 @@ def main():
     snake_direction = (SNAKE_SPEED, 0)
     new_direction = snake_direction
     food = random_food_position()
+
+    # Khởi tạo điểm số
+    score = 0
 
     moved = True
 
@@ -87,13 +100,15 @@ def main():
                 elif event.key == K_RIGHT and snake_direction[0] != -SNAKE_SPEED:
                     new_direction = (SNAKE_SPEED, 0)
                 moved = False
-
+        
         # Cập nhật vị trí rắn
         snake_direction = new_direction
         new_head = (snake[0][0] + snake_direction[0],
-        snake[0][1] + snake_direction[1])
+                    snake[0][1] + snake_direction[1])
 
-        if new_head in snake or new_head[0] < 0 or new_head[0] >= WINDOW_SIZE[0] or new_head[1] < 0 or new_head[1] >= WINDOW_SIZE[1]:
+        if (new_head[0] < 0 or new_head[0] >= WINDOW_SIZE[0]
+                or new_head[1] < 0 or new_head[1] >= WINDOW_SIZE[1]
+                or new_head in snake[1:]):
             game_over()
 
         snake.insert(0, new_head)
@@ -101,6 +116,8 @@ def main():
         # Kiểm tra ăn mồi
         if new_head == food:
             food = random_food_position()
+            # Cập nhật điểm số
+            score += 1
         else:
             snake.pop()
 
@@ -113,11 +130,11 @@ def main():
             screen, RED, (food[0], food[1], SNAKE_SIZE, SNAKE_SIZE))
 
         draw_grid()
+        draw_score(score)  # Hiển thị điểm số
 
         pygame.display.flip()
         fps.tick(7)
         moved = True
-
 
 if __name__ == "__main__":
     main()
