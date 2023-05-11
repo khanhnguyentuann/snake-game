@@ -40,11 +40,18 @@ def random_food_position():
 
 
 def draw_score(score, high_score):
-    font = pygame.font.Font(None, 36)
-    text = font.render(f"Score: {score} High Score: {high_score}", True, BLACK)
-    text_rect = text.get_rect()
-    text_rect.topleft = (10, 10)
-    screen.blit(text, text_rect)
+    font1 = pygame.font.SysFont('Arial', 36)
+    text1 = font1.render(f"Score: {score}", True, BLACK)
+    text1_rect = text1.get_rect()
+    text1_rect.topleft = (10, 10)
+    screen.blit(text1, text1_rect)
+
+    font2 = pygame.font.SysFont('Arial', 36, bold=True)
+    text2 = font2.render(f"High Score: {high_score}", True, BLACK)
+    text2_rect = text2.get_rect()
+    text2_rect.topright = (WINDOW_SIZE[0] - 10, 10)
+    screen.blit(text2, text2_rect)
+
 
 
 def random_snake_position():
@@ -55,16 +62,26 @@ def random_snake_position():
 
 
 def game_over(score):
-    font = pygame.font.Font(None, 54)
-    text = font.render("Game Over!", True, RED)
-    score_text = font.render(f"Score: {score}", True, RED)
-    text_rect = text.get_rect()
-    text_rect.center = (WINDOW_SIZE[0] // 2, WINDOW_SIZE[1] // 2)
-    score_text_rect = score_text.get_rect()
-    score_text_rect.center = (WINDOW_SIZE[0] // 2, WINDOW_SIZE[1] // 2 + 50)
-    screen.blit(text, text_rect)
-    screen.blit(score_text, score_text_rect)
+    font1 = pygame.font.Font(None, 54)
+    text1 = font1.render("Game Over!", True, RED)
+    text1_rect = text1.get_rect()
+    text1_rect.center = (WINDOW_SIZE[0] // 2, WINDOW_SIZE[1] // 2)
+    screen.blit(text1, text1_rect)
+    
+    font2 = pygame.font.Font(None, 36)
+    text2 = font2.render(f"Your Score: {score}", True, BLACK)
+    text2_rect = text2.get_rect()
+    text2_rect.center = (WINDOW_SIZE[0] // 2, WINDOW_SIZE[1] // 2 + 60)
+    screen.blit(text2, text2_rect)
+
+    font3 = pygame.font.Font(None, 24)
+    text3 = font3.render("Press 'R' to play again or 'Q' to quit.", True, BLACK)
+    text3_rect = text3.get_rect()
+    text3_rect.center = (WINDOW_SIZE[0] // 2, WINDOW_SIZE[1] // 2 + 100)
+    screen.blit(text3, text3_rect)
+
     pygame.display.flip()
+
     while True:
         for event in pygame.event.get():
             if event.type == QUIT or (event.type == KEYDOWN and event.key == K_q):
@@ -72,6 +89,7 @@ def game_over(score):
                 sys.exit()
             elif event.type == KEYDOWN and event.key == K_r:
                 main()
+
 
 
 def get_high_score():
