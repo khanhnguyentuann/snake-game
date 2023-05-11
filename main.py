@@ -1,6 +1,7 @@
 import pygame
 import sys
 import random
+import pickle
 from pygame.locals import *
 
 # Khởi tạo
@@ -38,9 +39,9 @@ def random_food_position():
     )
 
 
-def draw_score(score):
+def draw_score(score, high_score):
     font = pygame.font.Font(None, 36)
-    text = font.render(f"Score: {score}", True, BLACK)
+    text = font.render(f"Score: {score} High Score: {high_score}", True, BLACK)
     text_rect = text.get_rect()
     text_rect.topleft = (10, 10)
     screen.blit(text, text_rect)
@@ -53,20 +54,38 @@ def random_snake_position():
     )
 
 
-def game_over():
+def game_over(score):
     font = pygame.font.Font(None, 54)
     text = font.render("Game Over!", True, RED)
+    score_text = font.render(f"Score: {score}", True, RED)
     text_rect = text.get_rect()
     text_rect.center = (WINDOW_SIZE[0] // 2, WINDOW_SIZE[1] // 2)
+    score_text_rect = score_text.get_rect()
+    score_text_rect.center = (WINDOW_SIZE[0] // 2, WINDOW_SIZE[1] // 2 + 50)
     screen.blit(text, text_rect)
+    screen.blit(score_text, score_text_rect)
     pygame.display.flip()
     while True:
         for event in pygame.event.get():
             if event.type == QUIT or (event.type == KEYDOWN and event.key == K_q):
                 pygame.quit()
                 sys.exit()
-            elif event.type == KEYDOWN:
+            elif event.type == KEYDOWN and event.key == K_r:
                 main()
+
+
+def get_high_score():
+    try:
+        with open('high_score.dat', 'rb') as file:
+            high_score = pickle.load(file)
+    except FileNotFoundError:
+        high_score = 0
+    return high_score
+
+
+def save_high_score(high_score):
+    with open('high_score.dat', 'wb') as file:
+        pickle.dump(high_score, file)
 
 
 def main():
@@ -80,6 +99,7 @@ def main():
 
     # Khởi tạo điểm số
     score = 0
+    high_score = get_high_score()
 
     moved = True
 
@@ -100,7 +120,7 @@ def main():
                 elif event.key == K_RIGHT and snake_direction[0] != -SNAKE_SPEED:
                     new_direction = (SNAKE_SPEED, 0)
                 moved = False
-        
+
         # Cập nhật vị trí rắn
         snake_direction = new_direction
         new_head = (snake[0][0] + snake_direction[0],
@@ -109,15 +129,18 @@ def main():
         if (new_head[0] < 0 or new_head[0] >= WINDOW_SIZE[0]
                 or new_head[1] < 0 or new_head[1] >= WINDOW_SIZE[1]
                 or new_head in snake[1:]):
-            game_over()
+            save_high_score(high_score)
+            game_over(score)
 
         snake.insert(0, new_head)
 
         # Kiểm tra ăn mồi
         if new_head == food:
             food = random_food_position()
-            # Cập nhật điểm số
             score += 1
+            if score > high_score:
+                high_score = score
+
         else:
             snake.pop()
 
@@ -130,11 +153,12 @@ def main():
             screen, RED, (food[0], food[1], SNAKE_SIZE, SNAKE_SIZE))
 
         draw_grid()
-        draw_score(score)  # Hiển thị điểm số
+        draw_score(score, high_score)  # Hiển thị điểm số
 
         pygame.display.flip()
         fps.tick(7)
         moved = True
+
 
 if __name__ == "__main__":
     main()
