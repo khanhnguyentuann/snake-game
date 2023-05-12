@@ -37,6 +37,9 @@ GAME_AREA = (X_OFFSET, Y_OFFSET, GAME_WIDTH, GAME_HEIGHT)
 screen = pygame.display.set_mode(WINDOW_SIZE)
 pygame.display.set_caption("Rắn săn mồi")
 
+# Thêm biến tạm dừng
+paused = False
+
 
 def draw_border():
     pygame.draw.rect(screen, BLACK, pygame.Rect(*GAME_AREA), BORDER_WIDTH)
@@ -62,6 +65,13 @@ def random_snake_position():
         random.randint(GAME_AREA[1] // GRID_SIZE + 3, (GAME_AREA[1] +
                        GAME_AREA[3]) // GRID_SIZE - 4) * GRID_SIZE
     )
+
+def draw_paused():
+    font = pygame.font.Font(None, 54)
+    text = font.render("Game Paused", True, RED)
+    text_rect = text.get_rect()
+    text_rect.center = (WINDOW_SIZE[0] // 2, WINDOW_SIZE[1] // 2)
+    screen.blit(text, text_rect)
 
 
 def draw_score(score, high_score):
@@ -137,12 +147,15 @@ def main():
     high_score = get_high_score()
 
     moved = True
+    global paused
+
 
     while True:
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
+
 
             # Kiểm soát rắn
             if event.type == KEYDOWN and moved:
@@ -155,6 +168,22 @@ def main():
                 elif event.key == K_RIGHT and snake_direction[0] != -SNAKE_SPEED:
                     new_direction = (SNAKE_SPEED, 0)
                 moved = False
+
+            # Thêm phần này để kiểm tra việc nhấn phím 'p'
+            if event.type == KEYDOWN and event.key == K_p:
+                paused = not paused
+
+
+        while paused:
+            for event in pygame.event.get():
+                if event.type == QUIT:
+                    pygame.quit()
+                    sys.exit()
+                elif event.type == KEYDOWN and event.key == K_p:
+                    paused = not paused
+            draw_paused()
+            pygame.display.flip()
+            fps.tick(60)
 
         # Cập nhật vị trí rắn
         snake_direction = new_direction
