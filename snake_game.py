@@ -42,13 +42,18 @@ def draw_border():
     pygame.draw.rect(screen, BLACK, pygame.Rect(*GAME_AREA), BORDER_WIDTH)
 
 
-def random_food_position():
-    return (
-        random.randint(GAME_AREA[0] // GRID_SIZE + 1, (GAME_AREA[0] +
-                       GAME_AREA[2]) // GRID_SIZE - 2) * GRID_SIZE,
-        random.randint(GAME_AREA[1] // GRID_SIZE + 1, (GAME_AREA[1] +
-                       GAME_AREA[3]) // GRID_SIZE - 2) * GRID_SIZE
-    )
+def random_food_position(snake):
+    while True:
+        position = (
+            random.randint(GAME_AREA[0] // GRID_SIZE + 1, (GAME_AREA[0] +
+                           GAME_AREA[2]) // GRID_SIZE - 2) * GRID_SIZE,
+            random.randint(GAME_AREA[1] // GRID_SIZE + 1, (GAME_AREA[1] +
+                           GAME_AREA[3]) // GRID_SIZE - 2) * GRID_SIZE
+        )
+
+        if position not in snake:
+            return position
+
 
 def random_snake_position():
     return (
@@ -125,7 +130,7 @@ def main():
                     (head[0] - 2 * SNAKE_SIZE, head[1])]
     snake_direction = (SNAKE_SPEED, 0)
     new_direction = snake_direction
-    food = random_food_position()
+    food = random_food_position(snake)
 
     # Khởi tạo điểm số
     score = 0
@@ -165,7 +170,7 @@ def main():
 
         # Kiểm tra ăn mồi
         if new_head == food:
-            food = random_food_position()
+            food = random_food_position(snake)
             score += 1
             if score > high_score:
                 high_score = score
