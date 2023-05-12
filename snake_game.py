@@ -74,6 +74,9 @@ def draw_score(score, high_score):
     text1_rect.topleft = (10, 10)
     screen.blit(text1, text1_rect)
 
+    if score > high_score:  # Cập nhật điểm cao nhất nếu điểm vượt qua điểm cao nhất hiện tại
+        high_score = score
+
     font2 = pygame.font.SysFont('Arial', 36, bold=True)
     text2 = font2.render(f"High Score: {high_score}", True, BLACK)
     text2_rect = text2.get_rect()
@@ -116,6 +119,12 @@ def get_high_score():
 def save_high_score(high_score):
     with open('high_score.dat', 'wb') as file:
         pickle.dump(high_score, file)
+
+
+def update_high_score(score):
+    high_score = get_high_score()
+    if score > high_score:
+        save_high_score(score)
 
 
 def main():
@@ -162,12 +171,12 @@ def main():
             if (head[0] < GAME_AREA[0] or head[0] >= GAME_AREA[0] + GAME_AREA[2] or
                 head[1] < GAME_AREA[1] or head[1] >= GAME_AREA[1] + GAME_AREA[3] or
                     head in snake[1:]):
-                if score > high_score:
-                    save_high_score(score)
+                update_high_score(score)
                 game_over(score)
 
             if head == food:
                 score += 1
+                update_high_score(score)
                 food = random_position(snake)
             else:
                 snake.pop()
