@@ -37,8 +37,21 @@ GAME_AREA = (X_OFFSET, Y_OFFSET, GAME_WIDTH, GAME_HEIGHT)
 screen = pygame.display.set_mode(WINDOW_SIZE)
 pygame.display.set_caption("Rắn săn mồi")
 
-# Thêm biến tạm dừng
+
 paused = False
+# Định nghĩa kích thước của nút
+BUTTON_SIZE = GRID_SIZE
+
+# Tải và thay đổi kích thước hình ảnh
+pause_image = pygame.image.load('pause.png')
+pause_image = pygame.transform.scale(pause_image, (BUTTON_SIZE, BUTTON_SIZE))
+
+play_image = pygame.image.load('play.png')
+play_image = pygame.transform.scale(play_image, (BUTTON_SIZE, BUTTON_SIZE))
+
+# Khởi tạo nút và gán hình ảnh ban đầu
+button_image = pause_image
+button_rect = pygame.Rect(50, 50, BUTTON_SIZE, BUTTON_SIZE)
 
 
 def draw_border():
@@ -134,28 +147,24 @@ def save_high_score(high_score):
 
 
 def main():
-    # Vị trí rắn và mồi
+    global button_image
     head = random_snake_position()
     snake = [head, (head[0] - SNAKE_SIZE, head[1]),
                     (head[0] - 2 * SNAKE_SIZE, head[1])]
     snake_direction = (SNAKE_SPEED, 0)
     new_direction = snake_direction
     food = random_food_position(snake)
-
-    # Khởi tạo điểm số
     score = 0
     high_score = get_high_score()
 
     moved = True
     global paused
 
-
     while True:
         for event in pygame.event.get():
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
-
 
             # Kiểm soát rắn
             if event.type == KEYDOWN and moved:
@@ -169,58 +178,63 @@ def main():
                     new_direction = (SNAKE_SPEED, 0)
                 moved = False
 
-            # Thêm phần này để kiểm tra việc nhấn phím 'p'
             if event.type == KEYDOWN and event.key == K_p:
                 paused = not paused
+                button_image = play_image if paused else pause_image
 
-
-        while paused:
-            for event in pygame.event.get():
-                if event.type == QUIT:
-                    pygame.quit()
-                    sys.exit()
-                elif event.type == KEYDOWN and event.key == K_p:
+            if event.type == MOUSEBUTTONDOWN and event.button == 1:
+                if button_rect.collidepoint(event.pos):
                     paused = not paused
-            draw_paused()
-            pygame.display.flip()
-            fps.tick(60)
+                    button_image = play_image if paused else pause_image
+            screen.fill((255, 255, 255))
 
-        # Cập nhật vị trí rắn
-        snake_direction = new_direction
-        new_head = (snake[0][0] + snake_direction[0], snake[0][1] + snake_direction[1])
+        screen.blit(button_image, button_rect)
+        
+        if not paused:
+            # Cập nhật hướng đi
+            snake_direction = new_direction
 
-        if (new_head[0] < GAME_AREA[0] or new_head[0] >= GAME_AREA[0] + GAME_AREA[2]
-                or new_head[1] < GAME_AREA[1] or new_head [1] >= GAME_AREA[1] + GAME_AREA[3]
-                or new_head in snake[1:]):
-            save_high_score(high_score)
-            game_over(score)
+            # Di chuyển rắn
+            head = (head[0] + snake_direction[0], head[1] + snake_direction[1])
+            snake.insert(0, head)
+            moved = True
 
-        snake.insert(0, new_head)
+            # Kiểm tra va chạm
+            if (head[0] < GAME_AREA[0] or head[0] >= GAME_AREA[0] + GAME_AREA[2] or
+                head[1] < GAME_AREA[1] or head[1] >= GAME_AREA[1] + GAME_AREA[3] or
+                head in snake[1:]):
+                if score > high_score:
+                    save_high_score(score)
+                game_over(score)
 
-        # Kiểm tra ăn mồi
-        if new_head == food:
-            food = random_food_position(snake)
-            score += 1
-            if score > high_score:
-                high_score = score
+            # Kiểm tra ăn mồi
+            if head == food:
+                score += 1
+                food = random_food_position(snake)
+            else:
+                snake.pop()
 
-        else:
-            snake.pop()
-
-        # Vẽ rắn và mồi
+        # Vẽ màn hình
         screen.fill(WHITE)
-        for s in snake:
-            pygame.draw.rect(
-                screen, GREEN, (s[0], s[1], SNAKE_SIZE, SNAKE_SIZE))
-        pygame.draw.rect(
-            screen, RED, (food[0], food[1], SNAKE_SIZE, SNAKE_SIZE))
-
         draw_border()
-        draw_score(score, high_score)  # Hiển thị điểm số
+
+        for segment in snake:
+            pygame.draw.rect(screen, GREEN, pygame.Rect(*segment, SNAKE_SIZE, SNAKE_SIZE))
+
+        pygame.draw.rect(screen, RED, pygame.Rect(*food, SNAKE_SIZE, SNAKE_SIZE))
+
+        draw_score(score, high_score)
+
+        if paused:
+            screen.blit(play_image, button_rect)
+            draw_paused()
+        else:
+            screen.blit(pause_image, button_rect)
 
         pygame.display.flip()
+
+        # Thời gian chờ
         fps.tick(7)
-        moved = True
 
 
 if __name__ == "__main__":
