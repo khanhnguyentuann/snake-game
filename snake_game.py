@@ -99,7 +99,7 @@ def draw_score(score, high_score, play_time, special_food_time_left):
 
     if special_food_time_left > 0:
         font4 = pygame.font.SysFont('Arial', 36)
-        text4 = font4.render(f"Special food: {special_food_time_left} s", True, SPECIAL_FOOD_COLOR)
+        text4 = font4.render(f"Special food: {int(special_food_time_left)} s", True, SPECIAL_FOOD_COLOR)  # sử dụng hàm int() tại đây
         text4_rect = text4.get_rect()
         text4_rect.topleft = (350, 50)
         screen.blit(text4, text4_rect)
@@ -203,7 +203,7 @@ def main():
                 food = random_position(snake)
                 
                 # After eating 9 foods, spawn a special food
-                if score % 9 == 0:
+                if score % 12 == 0:
                     special_food = random_position(snake)
                     special_food_start_time = time.time()
             else:
@@ -211,7 +211,7 @@ def main():
 
             # Check if the snake eats the special food
             if special_food and head == special_food:
-                score += 5  # The special food gives 5 points
+                score += 3  # The special food gives 5 points
                 special_food = None  # Remove the special food after it's eaten
             elif special_food and time.time() - special_food_start_time >= 6:  # The special food lasts for 6 seconds
                 special_food = None  # Remove the special food after 6 seconds
