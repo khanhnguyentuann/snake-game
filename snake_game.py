@@ -20,6 +20,7 @@ WHITE = (255, 255, 255)
 GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 BLACK = (0, 0, 0)
+BLUE = (0, 0, 255)
 BORDER_WIDTH = 2
 BUTTON_SIZE = GRID_SIZE
 GAME_WIDTH = (WINDOW_SIZE[0] // GRID_SIZE) * 2 // 3 * GRID_SIZE
@@ -27,6 +28,12 @@ GAME_HEIGHT = (WINDOW_SIZE[1] // GRID_SIZE) * 2 // 3 * GRID_SIZE
 X_OFFSET = (WINDOW_SIZE[0] - GAME_WIDTH) // 2
 Y_OFFSET = (WINDOW_SIZE[1] - GAME_HEIGHT) // 2
 GAME_AREA = (X_OFFSET, Y_OFFSET, GAME_WIDTH, GAME_HEIGHT)
+special_food = None
+special_food_start_time = None
+food_eaten = 0
+SPECIAL_FOOD_SCORE = 5
+SPECIAL_FOOD_DURATION = 6
+SPECIAL_FOOD_COLOR = (0, 0, 255)  # Màu sắc của mồi đặc biệt
 
 # Tạo cửa sổ
 screen = pygame.display.set_mode(WINDOW_SIZE)
@@ -68,7 +75,7 @@ def draw_text(text, font_name, font_size, color, center):
     screen.blit(text_render, text_rect)
 
 
-def draw_score(score, high_score, play_time):
+def draw_score(score, high_score, play_time, special_food_time_left):
     font1 = pygame.font.SysFont('Arial', 36)
     text1 = font1.render(f"Score: {score}", True, BLACK)
     text1_rect = text1.get_rect()
@@ -89,6 +96,13 @@ def draw_score(score, high_score, play_time):
     text3_rect = text3.get_rect()
     text3_rect.topleft = (350, 10)
     screen.blit(text3, text3_rect)
+
+    if special_food_time_left > 0:
+        font4 = pygame.font.SysFont('Arial', 36)
+        text4 = font4.render(f"Special food: {special_food_time_left} s", True, SPECIAL_FOOD_COLOR)
+        text4_rect = text4.get_rect()
+        text4_rect.topleft = (350, 50)
+        screen.blit(text4, text4_rect)
 
 
 def game_over(score):
@@ -135,7 +149,7 @@ def update_high_score(score):
 
 
 def main():
-    global button_image, paused
+    global button_image, paused, special_food, special_food_start_time, food_eaten
     start_time = time.time()
     head = random_position()
     snake = [head, (head[0] - SNAKE_SIZE, head[1]),
@@ -182,22 +196,44 @@ def main():
                 update_high_score(score)
                 game_over(score)
 
+            # Check if the snake eats the food
             if head == food:
                 score += 1
                 update_high_score(score)
                 food = random_position(snake)
+                
+                # After eating 9 foods, spawn a special food
+                if score % 9 == 0:
+                    special_food = random_position(snake)
+                    special_food_start_time = time.time()
             else:
                 snake.pop()
-        # Cập nhật thời gian chơi
+
+            # Check if the snake eats the special food
+            if special_food and head == special_food:
+                score += 5  # The special food gives 5 points
+                special_food = None  # Remove the special food after it's eaten
+            elif special_food and time.time() - special_food_start_time >= 6:  # The special food lasts for 6 seconds
+                special_food = None  # Remove the special food after 6 seconds
+
+        # Update the play time
         play_time = int(time.time() - start_time)
+        if special_food:
+            special_food_time_left = max(0, SPECIAL_FOOD_DURATION - (time.time() - special_food_start_time))
+        else:
+            special_food_time_left = 0
 
         screen.fill(WHITE)
         draw_border()
         for segment in snake:
             pygame.draw.rect(screen, GREEN, pygame.Rect(*segment, SNAKE_SIZE, SNAKE_SIZE))
-        pygame.draw.rect(screen, RED, pygame.Rect(
-            *food, SNAKE_SIZE, SNAKE_SIZE))
-        draw_score(score, high_score, play_time)
+        pygame.draw.rect(screen, RED, pygame.Rect(*food, SNAKE_SIZE, SNAKE_SIZE))
+
+        # Draw the special food if it exists
+        if special_food:
+            pygame.draw.rect(screen, BLUE, pygame.Rect(*special_food, SNAKE_SIZE, SNAKE_SIZE))
+
+        draw_score(score, high_score, play_time, special_food_time_left)
 
         if paused:
             screen.blit(play_image, button_rect)
@@ -208,6 +244,7 @@ def main():
         pygame.display.flip()
         fps.tick(7)
 
-
 if __name__ == "__main__":
     main()
+
+        
