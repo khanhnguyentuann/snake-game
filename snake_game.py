@@ -1,6 +1,7 @@
 import pygame
 import sys
 import random
+import time
 import pickle
 from pygame.locals import *
 
@@ -67,7 +68,7 @@ def draw_text(text, font_name, font_size, color, center):
     screen.blit(text_render, text_rect)
 
 
-def draw_score(score, high_score):
+def draw_score(score, high_score, play_time):
     font1 = pygame.font.SysFont('Arial', 36)
     text1 = font1.render(f"Score: {score}", True, BLACK)
     text1_rect = text1.get_rect()
@@ -82,6 +83,12 @@ def draw_score(score, high_score):
     text2_rect = text2.get_rect()
     text2_rect.topright = (WINDOW_SIZE[0] - 10, 10)
     screen.blit(text2, text2_rect)
+
+    font3 = pygame.font.SysFont('Arial', 36)
+    text3 = font3.render(f"Time: {play_time} s", True, BLACK)
+    text3_rect = text3.get_rect()
+    text3_rect.topleft = (350, 10)
+    screen.blit(text3, text3_rect)
 
 
 def game_over(score):
@@ -129,6 +136,7 @@ def update_high_score(score):
 
 def main():
     global button_image, paused
+    start_time = time.time()
     head = random_position()
     snake = [head, (head[0] - SNAKE_SIZE, head[1]),
              (head[0] - 2 * SNAKE_SIZE, head[1])]
@@ -180,6 +188,8 @@ def main():
                 food = random_position(snake)
             else:
                 snake.pop()
+        # Cập nhật thời gian chơi
+        play_time = int(time.time() - start_time)
 
         screen.fill(WHITE)
         draw_border()
@@ -187,7 +197,7 @@ def main():
             pygame.draw.rect(screen, GREEN, pygame.Rect(*segment, SNAKE_SIZE, SNAKE_SIZE))
         pygame.draw.rect(screen, RED, pygame.Rect(
             *food, SNAKE_SIZE, SNAKE_SIZE))
-        draw_score(score, high_score)
+        draw_score(score, high_score, play_time)
 
         if paused:
             screen.blit(play_image, button_rect)
