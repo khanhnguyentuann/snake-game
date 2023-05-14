@@ -33,7 +33,7 @@ special_food_start_time = None
 food_eaten = 0
 SPECIAL_FOOD_SCORE = 5
 SPECIAL_FOOD_DURATION = 6
-SPECIAL_FOOD_COLOR = (0, 0, 255)  # Màu sắc của mồi đặc biệt
+SPECIAL_FOOD_COLOR = (0, 0, 255)
 
 # Tạo cửa sổ
 screen = pygame.display.set_mode(WINDOW_SIZE)
@@ -105,6 +105,34 @@ def draw_score(score, high_score, play_time, special_food_time_left):
         screen.blit(text4, text4_rect)
 
 
+# Biến mới để theo dõi màn chơi
+current_level = 1
+
+# Vật cản cho màn chơi 2
+obstacles = []
+
+def draw_level(level):
+    font = pygame.font.SysFont('Arial', 36)
+    text = font.render(f"Level: {level}", True, BLACK)
+    text_rect = text.get_rect()
+    text_rect.topleft = (160, 10)
+    screen.blit(text, text_rect)
+
+def draw_obstacles():
+    for obstacle in obstacles:
+        pygame.draw.rect(screen, BLACK, pygame.Rect(*obstacle, SNAKE_SIZE, SNAKE_SIZE))
+
+def next_level(level, snake):
+    global current_level, obstacles
+    current_level = level
+    if level == 2:
+        # Thêm vật cản vào màn chơi 2
+        for _ in range(5):
+            obstacles.append(random_position(snake))
+    draw_text(f"Moving to Level {level}!", None, 54, RED,
+              (WINDOW_SIZE[0] // 2, WINDOW_SIZE[1] // 2))
+
+
 def game_over(score):
     draw_text("Game Over!", None, 54, RED,
               (WINDOW_SIZE[0] // 2, WINDOW_SIZE[1] // 2))
@@ -149,7 +177,7 @@ def update_high_score(score):
 
 
 def main():
-    global button_image, paused, special_food, special_food_start_time, food_eaten
+    global button_image, paused, special_food, special_food_start_time, food_eaten, current_level
     start_time = time.time()
     head = random_position()
     snake = [head, (head[0] - SNAKE_SIZE, head[1]),
@@ -196,18 +224,27 @@ def main():
                 update_high_score(score)
                 game_over(score)
 
-            # Check if the snake eats the food
             if head == food:
                 score += 1
                 update_high_score(score)
                 food = random_position(snake)
-                
-                # After eating 12 foods, spawn a special food
                 if score % 12 == 0:
                     special_food = random_position(snake)
                     special_food_start_time = time.time()
             else:
                 snake.pop()
+
+            if score >= 15 and current_level <= score // 15:  # Kiểm tra điều kiện qua màn mới
+                next_level(current_level + 1, snake)
+                pygame.time.delay(2000)  # Dừng lại 2 giây để hiển thị thông báo
+
+
+            # Kiểm tra xem rắn có va chạm với vật cản không
+            if current_level > 1:
+                for obstacle in obstacles:
+                    if head == obstacle:
+                        update_high_score(score)
+                        game_over(score)
 
             # Check if the snake eats the special food
             if special_food and head == special_food:
@@ -233,7 +270,12 @@ def main():
         if special_food:
             pygame.draw.rect(screen, BLUE, pygame.Rect(*special_food, SNAKE_SIZE, SNAKE_SIZE))
 
+        # Vẽ vật cản nếu màn chơi lớn hơn 1
+        if current_level > 1:
+            draw_obstacles()
+
         draw_score(score, high_score, play_time, special_food_time_left)
+        draw_level(current_level)
 
         if paused:
             screen.blit(play_image, button_rect)
