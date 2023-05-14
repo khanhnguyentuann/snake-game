@@ -124,12 +124,39 @@ def draw_obstacles():
     for obstacle in obstacles:
         pygame.draw.rect(screen, BLACK, pygame.Rect(*obstacle, SNAKE_SIZE, SNAKE_SIZE))
 
-def next_level(level, snake):
-    global current_level, obstacles, message, message_start_time
+
+def next_level(level):
+    global current_level, obstacles, message, message_start_time, snake
     current_level = level
     if level == 2:
-        for _ in range(5):
-            obstacles.append(random_position(snake))
+        obstacles = [
+            (GRID_SIZE * 15, GRID_SIZE * 5),
+            (GRID_SIZE * 15, GRID_SIZE * 6),
+            (GRID_SIZE * 15, GRID_SIZE * 7),
+            (GRID_SIZE * 15, GRID_SIZE * 8),
+            (GRID_SIZE * 15, GRID_SIZE * 9),
+            (GRID_SIZE * 15, GRID_SIZE * 10),
+            (GRID_SIZE * 15, GRID_SIZE * 11),
+            (GRID_SIZE * 15, GRID_SIZE * 12),
+            (GRID_SIZE * 15, GRID_SIZE * 13),
+            (GRID_SIZE * 24, GRID_SIZE * 14),
+            (GRID_SIZE * 24, GRID_SIZE * 15),
+            (GRID_SIZE * 24, GRID_SIZE * 16),
+            (GRID_SIZE * 24, GRID_SIZE * 17),
+            (GRID_SIZE * 24, GRID_SIZE * 18),
+            (GRID_SIZE * 24, GRID_SIZE * 19),
+            (GRID_SIZE * 24, GRID_SIZE * 20),
+            (GRID_SIZE * 24, GRID_SIZE * 21),
+            (GRID_SIZE * 24, GRID_SIZE * 22),
+            (GRID_SIZE * 24, GRID_SIZE * 23),
+            (GRID_SIZE * 24, GRID_SIZE * 24)
+        ]
+        # Find a random position for the snake that doesn't collide with obstacles
+        while True:
+            head = random_position()
+            if head not in obstacles:
+                break
+        snake = [head, (head[0] - SNAKE_SIZE, head[1]), (head[0] - 2 * SNAKE_SIZE, head[1])]
     message = f"Moving to Level {level}!"
     message_start_time = time.time()
 
@@ -242,8 +269,8 @@ def main():
             else:
                 snake.pop()
 
-            if score >= 15 and current_level <= score // 15:  # Kiểm tra điều kiện qua màn mới
-                next_level(current_level + 1, snake)
+            if score >= 40 and current_level <= score // 40:  # Kiểm tra điều kiện qua màn mới
+                next_level(current_level + 1)
                 # Reset position of snake and food after changing level
                 head = random_position()
                 snake = [head, (head[0] - SNAKE_SIZE, head[1]),
