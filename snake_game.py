@@ -36,7 +36,6 @@ SPECIAL_FOOD_DURATION = 6
 SPECIAL_FOOD_COLOR = (0, 0, 255)
 message = None
 message_start_time = None
-MESSAGE_DURATION = 2  # Thời gian hiển thị thông báo là 2 giây
 
 # Tạo cửa sổ
 screen = pygame.display.set_mode(WINDOW_SIZE)
@@ -129,11 +128,16 @@ def next_level(level, snake):
     global current_level, obstacles, message, message_start_time
     current_level = level
     if level == 2:
-        # Thêm vật cản vào màn chơi 2
         for _ in range(5):
             obstacles.append(random_position(snake))
     message = f"Moving to Level {level}!"
     message_start_time = time.time()
+
+    # Draw and update the screen before sleeping
+    draw_text(message, None, 54, RED, (WINDOW_SIZE[0] // 2, WINDOW_SIZE[1] // 2))
+    pygame.display.flip()
+    time.sleep(2)
+
 
 
 def game_over(score):
@@ -181,6 +185,7 @@ def update_high_score(score):
 
 def main():
     global button_image, paused, special_food, special_food_start_time, food_eaten, current_level, message, message_start_time
+    MESSAGE_DURATION = 2  # Thời gian hiển thị thông báo là 2 giây
     start_time = time.time()
     head = random_position()
     snake = [head, (head[0] - SNAKE_SIZE, head[1]),
@@ -239,14 +244,12 @@ def main():
 
             if score >= 15 and current_level <= score // 15:  # Kiểm tra điều kiện qua màn mới
                 next_level(current_level + 1, snake)
+                # Reset position of snake and food after changing level
+                head = random_position()
+                snake = [head, (head[0] - SNAKE_SIZE, head[1]),
+                        (head[0] - 2 * SNAKE_SIZE, head[1])]
+                food = random_position(snake)
 
-            # # Vẽ thông báo nếu có
-            # if message and time.time() - message_start_time < MESSAGE_DURATION:
-            #     draw_text(message, None, 54, RED, (WINDOW_SIZE[0] // 2, WINDOW_SIZE[1] // 2))
-            # elif message:
-            #     message = None  # Xóa thông báo nếu đã hiển thị xong
-
-            # Kiểm tra xem rắn có va chạm với vật cản không
             if current_level > 1:
                 for obstacle in obstacles:
                     if head == obstacle:
@@ -289,12 +292,6 @@ def main():
             draw_paused()
         else:
             screen.blit(pause_image, button_rect)
-
-        # Vẽ thông báo nếu có
-        if message and time.time() - message_start_time < MESSAGE_DURATION:
-            draw_text(message, None, 54, RED, (WINDOW_SIZE[0] // 2, WINDOW_SIZE[1] // 2))
-        elif message:
-            message = None  # Xóa thông báo nếu đã hiển thị xong
 
         pygame.display.flip()
         fps.tick(7)
