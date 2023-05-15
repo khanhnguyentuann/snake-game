@@ -304,7 +304,7 @@ def main():
             pygame.draw.rect(screen, GREEN, pygame.Rect(*segment, SNAKE_SIZE, SNAKE_SIZE))
         pygame.draw.rect(screen, RED, pygame.Rect(*food, SNAKE_SIZE, SNAKE_SIZE))
 
-        # Draw the special food if it exists
+        # #Draw the special food if it exists
         if special_food:
             pygame.draw.rect(screen, BLUE, pygame.Rect(*special_food, SNAKE_SIZE, SNAKE_SIZE))
 
