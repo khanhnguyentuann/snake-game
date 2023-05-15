@@ -229,16 +229,17 @@ def main():
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
-            if event.type == KEYDOWN and moved:
-                if event.key == K_UP and snake_direction[1] != SNAKE_SPEED:
-                    new_direction = (0, -SNAKE_SPEED)
-                elif event.key == K_DOWN and snake_direction[1] != -SNAKE_SPEED:
-                    new_direction = (0, SNAKE_SPEED)
-                elif event.key == K_LEFT and snake_direction[0] != SNAKE_SPEED:
-                    new_direction = (-SNAKE_SPEED, 0)
-                elif event.key == K_RIGHT and snake_direction[0] != -SNAKE_SPEED:
-                    new_direction = (SNAKE_SPEED, 0)
-                moved = False
+            if event.type == KEYDOWN:
+                if moved:
+                    if event.key == K_UP and snake_direction[1] != SNAKE_SPEED:
+                        new_direction = (0, -SNAKE_SPEED)
+                    elif event.key == K_DOWN and snake_direction[1] != -SNAKE_SPEED:
+                        new_direction = (0, SNAKE_SPEED)
+                    elif event.key == K_LEFT and snake_direction[0] != SNAKE_SPEED:
+                        new_direction = (-SNAKE_SPEED, 0)
+                    elif event.key == K_RIGHT and snake_direction[0] != -SNAKE_SPEED:
+                        new_direction = (SNAKE_SPEED, 0)
+                    moved = False
 
             if event.type == KEYDOWN and event.key == K_p or (event.type == MOUSEBUTTONDOWN and event.button == 1 and button_rect.collidepoint(event.pos)):
                 paused = not paused
@@ -269,7 +270,7 @@ def main():
             else:
                 snake.pop()
 
-            if score >= 40 and current_level <= score // 40:  # Kiểm tra điều kiện qua màn mới
+            if score >= 2 and current_level <= score // 2:  # Kiểm tra điều kiện qua màn mới
                 next_level(current_level + 1)
                 # Reset position of snake and food after changing level
                 head = random_position()
@@ -322,6 +323,7 @@ def main():
 
         pygame.display.flip()
         fps.tick(7)
+        #
 
 if __name__ == "__main__":
     main()
