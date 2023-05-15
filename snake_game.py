@@ -308,7 +308,7 @@ def main():
         if special_food:
             pygame.draw.rect(screen, BLUE, pygame.Rect(*special_food, SNAKE_SIZE, SNAKE_SIZE))
 
-        # Vẽ vật cản nếu màn chơi lớn hơn 1
+        # #Vẽ vật cản nếu màn chơi lớn hơn 1
         if current_level > 1:
             draw_obstacles()
 
