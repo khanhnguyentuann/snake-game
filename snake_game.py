@@ -263,7 +263,7 @@ def main():
         screen.blit(images["pause"], button_rect)
         pygame.display.flip()
         fps.tick(7)
-#
+##
 if __name__ == "__main__":
     font1 = pygame.font.SysFont('Arial', 36)
     font2 = pygame.font.SysFont('Arial', 36, bold=True)
