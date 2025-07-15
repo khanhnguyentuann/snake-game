@@ -227,6 +227,7 @@ body {
 }
 
 @keyframes pulse {
+
     0%,
     100% {
         transform: scale(1);
@@ -240,6 +241,7 @@ body {
 }
 
 @keyframes specialPulse {
+
     0%,
     100% {
         transform: scale(1) rotate(0deg);
@@ -355,12 +357,29 @@ body {
 
     .mobile-controls {
         display: grid;
+        margin: 15px auto;
+        max-width: 180px;
+    }
+
+    .mobile-btn {
+        font-size: 1.2rem;
+        padding: 12px;
+    }
+
+    .mobile-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
     }
 
     .game-controls {
         flex-direction: column;
         align-items: center;
         gap: 10px;
+    }
+
+    .btn {
+        min-width: 140px;
+        justify-content: center;
     }
 
     .paused-overlay {
@@ -435,5 +454,281 @@ body {
 
     .stat-item {
         font-size: 0.75rem;
+    }
+}
+
+/* Help Modal Styles */
+.help-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-in-out;
+    padding: 20px;
+}
+
+.help-modal-content {
+    background: white;
+    border-radius: 20px;
+    max-width: 600px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.help-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 30px;
+    border-bottom: 2px solid #e5e7eb;
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    border-radius: 20px 20px 0 0;
+}
+
+.help-modal-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.help-close-btn {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.help-close-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.help-modal-body {
+    padding: 30px;
+}
+
+.help-section {
+    margin-bottom: 30px;
+}
+
+.help-section:last-child {
+    margin-bottom: 0;
+}
+
+.help-section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    margin-bottom: 15px;
+}
+
+.help-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.help-control-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 10px;
+    background: #f9fafb;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+}
+
+.help-control-item kbd {
+    background: var(--primary-color);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-family: monospace;
+    font-weight: bold;
+    min-width: 80px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.help-control-item span {
+    color: var(--text-color);
+    font-weight: 500;
+}
+
+.mobile-control-demo {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+    width: 80px;
+}
+
+.demo-btn {
+    aspect-ratio: 1;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.demo-btn:nth-child(1) {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.demo-btn:nth-child(2) {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+.demo-btn:nth-child(3) {
+    grid-column: 3;
+    grid-row: 2;
+}
+
+.demo-btn:nth-child(4) {
+    grid-column: 2;
+    grid-row: 3;
+}
+
+.help-gameplay {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.help-gameplay-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 15px;
+    background: #f9fafb;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+}
+
+.food-demo {
+    font-size: 1.5rem;
+    min-width: 30px;
+    text-align: center;
+}
+
+.food-demo.red {
+    color: #ef4444;
+}
+
+.food-demo.blue {
+    color: #3b82f6;
+}
+
+.food-demo.danger {
+    color: #f59e0b;
+}
+
+.help-gameplay-item div {
+    flex: 1;
+}
+
+.help-gameplay-item strong {
+    color: var(--primary-color);
+    font-size: 1.1rem;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.help-gameplay-item p {
+    color: var(--text-color);
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* Mobile Help Modal */
+@media (max-width: 768px) {
+    .help-modal-overlay {
+        padding: 10px;
+    }
+
+    .help-modal-header {
+        padding: 15px 20px;
+    }
+
+    .help-modal-header h2 {
+        font-size: 1.3rem;
+    }
+
+    .help-modal-body {
+        padding: 20px;
+    }
+
+    .help-section-title {
+        font-size: 1.1rem;
+    }
+
+    .help-control-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        text-align: center;
+    }
+
+    .help-control-item kbd {
+        min-width: auto;
+        width: 100%;
+    }
+
+    .help-gameplay-item {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .mobile-control-demo {
+        width: 60px;
+        margin: 0 auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .help-modal-content {
+        max-height: 95vh;
+    }
+
+    .help-modal-header {
+        padding: 12px 15px;
+    }
+
+    .help-modal-header h2 {
+        font-size: 1.2rem;
+    }
+
+    .help-modal-body {
+        padding: 15px;
+    }
+
+    .help-section {
+        margin-bottom: 20px;
+    }
+
+    .help-section-title {
+        font-size: 1rem;
     }
 }

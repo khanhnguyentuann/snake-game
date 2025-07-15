@@ -1,12 +1,14 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import { useGameLogic } from './hooks/useGameLogic';
 import { getDirectionFromKey } from './utils/gameUtils';
 import GameBoard from './components/GameBoard';
 import GameStats from './components/GameStats';
 import GameControls from './components/GameControls';
 import GameOver from './components/GameOver';
+import HelpModal from './components/HelpModal';
 
 const App: React.FC = () => {
+  const [showHelp, setShowHelp] = useState(false);
   const {
     gameState,
     gameConfig,
@@ -82,6 +84,7 @@ const App: React.FC = () => {
         onPauseGame={pauseGame}
         onResetGame={resetGame}
         onChangeDirection={changeDirection}
+        onShowHelp={() => setShowHelp(true)}
       />
 
       <GameOver
@@ -90,33 +93,10 @@ const App: React.FC = () => {
         onBackToMenu={handleBackToMenu}
       />
 
-      {gameState.gameStatus === 'menu' && (
-        <div style={{
-          marginTop: '30px',
-          padding: '20px',
-          backgroundColor: 'rgba(79, 70, 229, 0.1)',
-          borderRadius: '15px',
-          border: '2px solid rgba(79, 70, 229, 0.2)',
-        }}>
-          <h3 style={{ color: '#4f46e5', marginBottom: '15px' }}>
-                        🎮 Chào mừng đến với Snake Game Modern!
-          </h3>
-          <p style={{ marginBottom: '10px', color: '#374151' }}>
-                        Trò chơi rắn săn mồi được làm mới với công nghệ React + TypeScript hiện đại nhất 2025!
-          </p>
-          <div style={{ fontSize: '0.9rem', color: '#6b7280' }}>
-            <p>✨ <strong>Tính năng mới:</strong></p>
-            <ul style={{ textAlign: 'left', marginLeft: '20px' }}>
-              <li>Giao diện hiện đại với hiệu ứng đẹp mắt</li>
-              <li>Âm thanh sinh động</li>
-              <li>Nhiều level thử thách</li>
-              <li>Thức ăn đặc biệt với điểm thưởng</li>
-              <li>Responsive design cho mọi thiết bị</li>
-              <li>Lưu điểm cao tự động</li>
-            </ul>
-          </div>
-        </div>
-      )}
+      <HelpModal
+        isOpen={showHelp}
+        onClose={() => setShowHelp(false)}
+      />
     </div>
   );
 };

@@ -2,8 +2,8 @@ import React from 'react';
 import { GameState, GameConfig } from '../types/game';
 
 interface GameBoardProps {
-    gameState: GameState;
-    gameConfig: GameConfig;
+  gameState: GameState;
+  gameConfig: GameConfig;
 }
 
 const GameBoard: React.FC<GameBoardProps> = ({ gameState, gameConfig }) => {
@@ -94,36 +94,38 @@ const GameBoard: React.FC<GameBoardProps> = ({ gameState, gameConfig }) => {
   const renderGrid = () => {
     const gridLines: React.ReactElement[] = [];
 
-    // Vertical lines
+    // Vertical lines - ensure consistent thickness
     for (let x = 0; x <= boardWidth; x++) {
+      const isEdge = x === 0 || x === boardWidth;
       gridLines.push(
         <div
           key={`v-${x}`}
           style={{
             position: 'absolute',
-            left: x * cellSize,
+            left: x * cellSize - (isEdge ? 0 : 0.5),
             top: 0,
-            width: '1px',
+            width: isEdge ? '1px' : '1px',
             height: boardHeight * cellSize,
-            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            backgroundColor: 'rgba(255, 255, 255, 0.15)',
             zIndex: 1,
           }}
         />,
       );
     }
 
-    // Horizontal lines
+    // Horizontal lines - ensure consistent thickness
     for (let y = 0; y <= boardHeight; y++) {
+      const isEdge = y === 0 || y === boardHeight;
       gridLines.push(
         <div
           key={`h-${y}`}
           style={{
             position: 'absolute',
             left: 0,
-            top: y * cellSize,
+            top: y * cellSize - (isEdge ? 0 : 0.5),
             width: boardWidth * cellSize,
-            height: '1px',
-            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            height: isEdge ? '1px' : '1px',
+            backgroundColor: 'rgba(255, 255, 255, 0.15)',
             zIndex: 1,
           }}
         />,
@@ -145,7 +147,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ gameState, gameConfig }) => {
         <div className="paused-overlay">
           <div>GAME PAUSED</div>
           <div style={{ fontSize: '1rem', marginTop: '10px' }}>
-                        Press SPACE or click Pause to continue
+            Press SPACE or click Pause to continue
           </div>
         </div>
       )}
