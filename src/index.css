@@ -21,17 +21,19 @@ body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     color: var(--text-color);
+    margin: 0;
+    padding: 0;
 }
 
 #root {
     width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    box-sizing: border-box;
 }
 
 .game-container {
@@ -39,11 +41,16 @@ body {
     border-radius: 20px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(10px);
-    padding: 30px;
+    padding: 20px;
     text-align: center;
     animation: fadeIn 0.5s ease-in-out;
-    max-width: 100%;
-    overflow-x: auto;
+    width: 100%;
+    max-width: min(95vw, 900px);
+    max-height: 95vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 @keyframes fadeIn {
@@ -65,17 +72,19 @@ body {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
 }
 
 .game-stats {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     flex-wrap: wrap;
     gap: 15px;
+    flex-shrink: 0;
 }
 
 .stat-item {
@@ -93,15 +102,18 @@ body {
 }
 
 .game-board {
-    border: 3px solid var(--primary-color);
+    border: 2px solid var(--primary-color);
     border-radius: 15px;
-    margin: 20px auto;
+    margin: 10px auto;
     background: #000;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     position: relative;
     overflow: hidden;
-    max-width: 100%;
-    width: fit-content;
+    width: 100%;
+    max-width: min(80vw, 80vh, 600px);
+    aspect-ratio: 4/3;
+    flex-shrink: 1;
+    min-height: 0;
 }
 
 .game-board::before {
@@ -120,8 +132,9 @@ body {
     display: flex;
     justify-content: center;
     gap: 15px;
-    margin: 20px 0;
+    margin: 15px 0 10px 0;
     flex-wrap: wrap;
+    flex-shrink: 0;
 }
 
 .btn {
@@ -274,8 +287,9 @@ body {
     display: none;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
-    max-width: 200px;
-    margin: 20px auto;
+    max-width: 180px;
+    margin: 10px auto;
+    flex-shrink: 0;
 }
 
 .mobile-btn {
@@ -323,47 +337,49 @@ body {
 
 @media (max-width: 768px) {
     #root {
-        padding: 10px;
+        padding: 5px;
     }
 
     .game-container {
-        padding: 15px;
+        padding: 10px;
         border-radius: 15px;
+        max-width: 98vw;
+        max-height: 98vh;
     }
 
     .game-title {
-        font-size: 2rem;
-        margin-bottom: 15px;
+        font-size: 1.8rem;
+        margin-bottom: 10px;
     }
 
     .game-stats {
         justify-content: center;
         text-align: center;
-        gap: 10px;
-        margin-bottom: 15px;
+        gap: 8px;
+        margin-bottom: 10px;
     }
 
     .stat-item {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         flex-direction: column;
         gap: 4px;
     }
 
     .game-board {
-        margin: 15px auto;
-        max-width: calc(100vw - 60px);
-        transform-origin: center;
+        margin: 8px auto;
+        max-width: min(90vw, 70vh, 400px);
+        border-width: 2px;
     }
 
     .mobile-controls {
         display: grid;
-        margin: 15px auto;
-        max-width: 180px;
+        margin: 8px auto;
+        max-width: 160px;
     }
 
     .mobile-btn {
-        font-size: 1.2rem;
-        padding: 12px;
+        font-size: 1.1rem;
+        padding: 10px;
     }
 
     .mobile-btn:disabled {
@@ -374,12 +390,15 @@ body {
     .game-controls {
         flex-direction: column;
         align-items: center;
-        gap: 10px;
+        gap: 8px;
+        margin: 8px 0;
     }
 
     .btn {
-        min-width: 140px;
+        min-width: 120px;
         justify-content: center;
+        padding: 10px 16px;
+        font-size: 0.9rem;
     }
 
     .paused-overlay {
@@ -391,69 +410,96 @@ body {
 
 @media (max-width: 480px) {
     #root {
-        padding: 5px;
+        padding: 2px;
     }
 
     .game-container {
-        padding: 10px;
+        padding: 8px;
         border-radius: 10px;
+        max-width: 99vw;
+        max-height: 99vh;
     }
 
     .game-title {
-        font-size: 1.5rem;
-        margin-bottom: 10px;
+        font-size: 1.4rem;
+        margin-bottom: 8px;
     }
 
     .game-stats {
-        gap: 8px;
-        margin-bottom: 10px;
+        gap: 6px;
+        margin-bottom: 8px;
     }
 
     .stat-item {
-        font-size: 0.8rem;
+        font-size: 0.75rem;
     }
 
     .game-board {
-        margin: 10px auto;
-        max-width: calc(100vw - 40px);
-        border-width: 2px;
+        margin: 6px auto;
+        max-width: min(95vw, 60vh, 320px);
+        border-width: 1px;
     }
 
     .btn {
-        padding: 8px 16px;
-        font-size: 0.8rem;
+        padding: 8px 12px;
+        font-size: 0.75rem;
+        min-width: 100px;
     }
 
     .game-over-content {
-        padding: 20px 15px;
-        margin: 10px;
+        padding: 15px 10px;
+        margin: 5px;
     }
 
     .game-over-title {
-        font-size: 1.5rem;
+        font-size: 1.3rem;
     }
 
     .final-score {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
     }
 
     .paused-overlay {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
+    }
+
+    .mobile-controls {
+        max-width: 140px;
+        margin: 6px auto;
+    }
+
+    .mobile-btn {
+        font-size: 1rem;
+        padding: 8px;
     }
 }
 
 @media (max-width: 360px) {
     .game-board {
-        max-width: calc(100vw - 30px);
-        transform: scale(0.9);
+        max-width: min(98vw, 55vh, 280px);
     }
 
     .game-title {
-        font-size: 1.3rem;
+        font-size: 1.2rem;
     }
 
     .stat-item {
-        font-size: 0.75rem;
+        font-size: 0.7rem;
+    }
+
+    .btn {
+        font-size: 0.7rem;
+        padding: 6px 10px;
+        min-width: 90px;
+    }
+
+    .mobile-controls {
+        max-width: 120px;
+    }
+
+    .mobile-btn {
+        font-size: 0.9rem;
+        padding: 6px;
     }
 }
 
@@ -470,7 +516,7 @@ body {
     justify-content: center;
     z-index: 1000;
     animation: fadeIn 0.3s ease-in-out;
-    padding: 20px;
+    padding: 10px;
 }
 
 .help-modal-content {
@@ -665,7 +711,7 @@ body {
 /* Mobile Help Modal */
 @media (max-width: 768px) {
     .help-modal-overlay {
-        padding: 10px;
+        padding: 5px;
     }
 
     .help-modal-header {
@@ -709,7 +755,7 @@ body {
 
 @media (max-width: 480px) {
     .help-modal-content {
-        max-height: 95vh;
+        max-height: 98vh;
     }
 
     .help-modal-header {

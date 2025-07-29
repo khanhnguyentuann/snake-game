@@ -10,19 +10,45 @@ const GameBoard: React.FC<GameBoardProps> = ({ gameState, gameConfig }) => {
   const { boardWidth, boardHeight, cellSize } = gameConfig;
   const { snake, food, specialFood, obstacles, gameStatus } = gameState;
 
+  // Calculate responsive cell size based on container
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const [responsiveCellSize, setResponsiveCellSize] = React.useState(cellSize);
+
+  React.useEffect(() => {
+    const updateCellSize = () => {
+      if (containerRef.current) {
+        const container = containerRef.current;
+        const containerWidth = container.clientWidth;
+        const containerHeight = container.clientHeight;
+        
+        // Calculate cell size to fit the container while maintaining aspect ratio
+        const maxCellWidth = Math.floor(containerWidth / boardWidth);
+        const maxCellHeight = Math.floor(containerHeight / boardHeight);
+        const newCellSize = Math.min(maxCellWidth, maxCellHeight, cellSize);
+        
+        setResponsiveCellSize(Math.max(newCellSize, 8)); // Minimum 8px cells
+      }
+    };
+
+    updateCellSize();
+    window.addEventListener('resize', updateCellSize);
+    return () => window.removeEventListener('resize', updateCellSize);
+  }, [boardWidth, boardHeight, cellSize]);
+
   const boardStyle = {
-    width: boardWidth * cellSize,
-    height: boardHeight * cellSize,
+    width: boardWidth * responsiveCellSize,
+    height: boardHeight * responsiveCellSize,
     position: 'relative' as const,
     backgroundColor: '#000',
+    margin: '0 auto',
   };
 
   const getCellStyle = (x: number, y: number) => ({
     position: 'absolute' as const,
-    left: x * cellSize,
-    top: y * cellSize,
-    width: cellSize,
-    height: cellSize,
+    left: x * responsiveCellSize,
+    top: y * responsiveCellSize,
+    width: responsiveCellSize,
+    height: responsiveCellSize,
   });
 
   const renderSnake = () => {
@@ -102,10 +128,10 @@ const GameBoard: React.FC<GameBoardProps> = ({ gameState, gameConfig }) => {
           key={`v-${x}`}
           style={{
             position: 'absolute',
-            left: x * cellSize - (isEdge ? 0 : 0.5),
+            left: x * responsiveCellSize - (isEdge ? 0 : 0.5),
             top: 0,
             width: isEdge ? '1px' : '1px',
-            height: boardHeight * cellSize,
+            height: boardHeight * responsiveCellSize,
             backgroundColor: 'rgba(255, 255, 255, 0.15)',
             zIndex: 1,
           }}
@@ -122,8 +148,8 @@ const GameBoard: React.FC<GameBoardProps> = ({ gameState, gameConfig }) => {
           style={{
             position: 'absolute',
             left: 0,
-            top: y * cellSize - (isEdge ? 0 : 0.5),
-            width: boardWidth * cellSize,
+            top: y * responsiveCellSize - (isEdge ? 0 : 0.5),
+            width: boardWidth * responsiveCellSize,
             height: isEdge ? '1px' : '1px',
             backgroundColor: 'rgba(255, 255, 255, 0.15)',
             zIndex: 1,
@@ -136,7 +162,7 @@ const GameBoard: React.FC<GameBoardProps> = ({ gameState, gameConfig }) => {
   };
 
   return (
-    <div className="game-board" style={boardStyle}>
+    <div className="game-board" ref={containerRef} style={boardStyle}>
       {renderGrid()}
       {renderObstacles()}
       {renderFood()}
