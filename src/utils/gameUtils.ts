@@ -219,16 +219,16 @@ export const checkCollision = (position: Position, positions: Position[]): boole
 
 export const getOppositeDirection = (direction: Direction): Direction => {
   switch (direction) {
-    case 'UP':
-      return 'DOWN';
-    case 'DOWN':
-      return 'UP';
-    case 'LEFT':
-      return 'RIGHT';
-    case 'RIGHT':
-      return 'LEFT';
-    default:
-      return direction;
+  case 'UP':
+    return 'DOWN';
+  case 'DOWN':
+    return 'UP';
+  case 'LEFT':
+    return 'RIGHT';
+  case 'RIGHT':
+    return 'LEFT';
+  default:
+    return direction;
   }
 };
 
@@ -240,24 +240,24 @@ export const formatTime = (seconds: number): string => {
 
 export const getDirectionFromKey = (key: string): Direction | null => {
   switch (key) {
-    case 'ArrowUp':
-    case 'w':
-    case 'W':
-      return 'UP';
-    case 'ArrowDown':
-    case 's':
-    case 'S':
-      return 'DOWN';
-    case 'ArrowLeft':
-    case 'a':
-    case 'A':
-      return 'LEFT';
-    case 'ArrowRight':
-    case 'd':
-    case 'D':
-      return 'RIGHT';
-    default:
-      return null;
+  case 'ArrowUp':
+  case 'w':
+  case 'W':
+    return 'UP';
+  case 'ArrowDown':
+  case 's':
+  case 'S':
+    return 'DOWN';
+  case 'ArrowLeft':
+  case 'a':
+  case 'A':
+    return 'LEFT';
+  case 'ArrowRight':
+  case 'd':
+  case 'D':
+    return 'RIGHT';
+  default:
+    return null;
   }
 };
 
